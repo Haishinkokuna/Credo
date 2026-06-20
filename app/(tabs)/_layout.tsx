@@ -1,64 +1,74 @@
 import { SymbolView } from 'expo-symbols';
-import { Link, Tabs } from 'expo-router';
-import { Platform, Pressable } from 'react-native';
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { TouchableOpacity, Text } from 'react-native';
 
+import { useLocale } from '@/context/LocaleContext';
 import Colors from '@/constants/Colors';
-import { useColorScheme } from '@/components/useColorScheme';
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
+import { i18n } from '@/i18n';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const { locale, toggleLanguage } = useLocale();
+
+  const LanguageButton = () => (
+    <TouchableOpacity onPress={toggleLanguage} style={{ marginRight: 15 }}>
+      <Text style={{ color: Colors.ps2.neonBlue, fontWeight: 'bold' }}>
+        {locale.toUpperCase()}
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
+        tabBarActiveTintColor: Colors.ps2.neonBlue,
+        tabBarInactiveTintColor: Colors.ps2.electricBlue,
+        tabBarStyle: {
+          backgroundColor: Colors.ps2.black,
+          borderTopColor: Colors.ps2.electricBlue,
+          borderTopWidth: 2,
+        },
+        headerStyle: {
+          backgroundColor: Colors.ps2.black,
+          borderBottomColor: Colors.ps2.electricBlue,
+          borderBottomWidth: 1,
+        },
+        headerTintColor: Colors.ps2.neonBlue,
+        headerRight: () => <LanguageButton />,
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Tab One',
+          title: i18n.t('tracker'),
           tabBarIcon: ({ color }) => (
             <SymbolView
-              name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
-              }}
+              name={{ ios: 'doc.text', android: 'article', web: 'article' }}
               tintColor={color}
               size={28}
             />
           ),
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable style={{ marginRight: 15 }}>
-                {({ pressed }) => (
-                  <SymbolView
-                    name={{ ios: 'info.circle', android: 'info', web: 'info' }}
-                    size={25}
-                    tintColor={Colors[colorScheme].text}
-                    style={{ opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
+        }}
+      />
+      <Tabs.Screen
+        name="discovery"
+        options={{
+          title: i18n.t('discovery'),
+          tabBarIcon: ({ color }) => (
+            <SymbolView
+              name={{ ios: 'globe', android: 'public', web: 'public' }}
+              tintColor={color}
+              size={28}
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="analytics"
         options={{
-          title: 'Tab Two',
+          title: i18n.t('analytics'),
           tabBarIcon: ({ color }) => (
             <SymbolView
-              name={{
-                ios: 'chevron.left.forwardslash.chevron.right',
-                android: 'code',
-                web: 'code',
-              }}
+              name={{ ios: 'chart.bar', android: 'analytics', web: 'analytics' }}
               tintColor={color}
               size={28}
             />
